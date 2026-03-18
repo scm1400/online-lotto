@@ -1,0 +1,376 @@
+/* ========== Widget Root (용지 전체) ========== */
+.lotto-widget {
+  display: flex;
+  flex-direction: column;
+  max-width: 380px;
+  width: 90%;
+  margin: 0 auto;
+  background: #faf8f5;
+  border: 1.5px solid #d4a0a0;
+  border-radius: 4px;
+  font-family: 'Gothic A1', 'Noto Sans KR', -apple-system, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ========== Header (실제 로또 용지 상단) ========== */
+.lotto-header {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: linear-gradient(135deg, #e8696b 0%, #dc5557 100%);
+  color: white;
+  padding: 0;
+  height: 44px;
+  position: relative;
+}
+
+.lotto-header__label {
+  font-weight: 800;
+  font-size: 20px;
+  background: white;
+  color: #d44;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-right: 1.5px solid rgba(255,255,255,0.3);
+}
+
+.lotto-header__price {
+  flex: 1;
+  text-align: center;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+.lotto-header__badge {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.25);
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ========== Grid Container ========== */
+.lotto-grid-container {
+  padding: 16px 12px 12px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+/* ========== Grid Cells (실제 로또 용지 — [ ] 대괄호 스타일) ========== */
+.lotto-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+  transition: transform 0.1s ease;
+}
+
+/*
+  위아래 대괄호 — ::before = 위쪽 ⌐¬, ::after = 아래쪽 ∟⌙
+  가로 전체 + 좌우 짧은 세로선
+*/
+.lotto-cell::before,
+.lotto-cell::after {
+  content: '';
+  position: absolute;
+  left: 25%;
+  right: 25%;
+  height: 5px;
+  pointer-events: none;
+}
+
+/* 위쪽 ⌐ ¬ */
+.lotto-cell::before {
+  top: 3px;
+  border-top: 1.5px solid #d9686a;
+  border-left: 1.5px solid #d9686a;
+  border-right: 1.5px solid #d9686a;
+}
+
+/* 아래쪽 ∟ ⌙ */
+.lotto-cell::after {
+  bottom: 3px;
+  border-bottom: 1.5px solid #d9686a;
+  border-left: 1.5px solid #d9686a;
+  border-right: 1.5px solid #d9686a;
+}
+
+/* corners span 불필요 — 숨김 */
+.lotto-cell__corners {
+  display: none;
+}
+
+.lotto-cell--selected .lotto-cell__number {
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.lotto-cell__number {
+  font-family: 'Pretendard', 'Gothic A1', 'Noto Sans KR', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: #d44;
+  pointer-events: none;
+  user-select: none;
+  position: relative;
+  z-index: 1;
+}
+
+.lotto-cell--empty {
+  visibility: hidden;
+}
+
+/* Shake animation for overflow */
+@keyframes lotto-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-2px); }
+  40%, 80% { transform: translateX(2px); }
+}
+
+.lotto-cell--shake {
+  animation: lotto-shake 0.3s ease;
+}
+
+/* ========== Overflow Tooltip ========== */
+.lotto-overflow-tooltip {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  z-index: 10;
+  animation: lotto-fade-in 0.15s ease;
+}
+
+@keyframes lotto-fade-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ========== Selection Info ========== */
+.lotto-selection-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(255,255,255,0.7);
+  border-top: 1px solid #e8d0d0;
+  flex-wrap: wrap;
+}
+
+.lotto-selection-info--complete {
+  background: rgba(240, 247, 255, 0.8);
+  animation: lotto-shimmer 0.6s ease;
+}
+
+@keyframes lotto-shimmer {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.lotto-selection-info__label {
+  font-size: 12px;
+  color: #888;
+  white-space: nowrap;
+}
+
+.lotto-selection-info__slots {
+  display: flex;
+  gap: 4px;
+}
+
+.lotto-slot {
+  width: 34px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.lotto-slot--filled {
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.lotto-slot--filled:hover {
+  opacity: 0.8;
+}
+
+.lotto-slot--empty {
+  border: 1.5px dashed #ccc;
+  color: #ccc;
+  font-size: 11px;
+}
+
+.lotto-selection-info__count {
+  font-size: 13px;
+  font-weight: 700;
+  color: #d44;
+  margin-left: auto;
+}
+
+/* ========== Tag Selector ========== */
+.lotto-tag-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 14px;
+}
+
+.lotto-tag-selector__label {
+  font-size: 11px;
+  color: #aaa;
+}
+
+.lotto-tag-selector__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.lotto-tag-chip {
+  padding: 5px 11px;
+  border: 1px solid #d9686a;
+  border-radius: 14px;
+  background: white;
+  font-size: 12px;
+  color: #d44;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.lotto-tag-chip:hover {
+  background: #fff0f0;
+}
+
+.lotto-tag-chip--selected {
+  background: #d44;
+  color: white;
+  border-color: #d44;
+}
+
+/* ========== Action Bar ========== */
+.lotto-action-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 14px 14px;
+}
+
+.lotto-action-bar__row {
+  display: flex;
+  gap: 8px;
+}
+
+/* ========== Buttons ========== */
+.lotto-btn {
+  font-family: inherit;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.lotto-btn--secondary {
+  flex: 1;
+  padding: 9px 14px;
+  border: 1px solid #d4a0a0;
+  background: white;
+  color: #555;
+}
+
+.lotto-btn--secondary:hover:not(:disabled) {
+  background: #fff5f5;
+}
+
+.lotto-btn--primary {
+  width: 100%;
+  padding: 11px 16px;
+  border: none;
+  background: linear-gradient(135deg, #e8696b 0%, #dc5557 100%);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 6px;
+}
+
+.lotto-btn--primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #dc5557 0%, #c94446 100%);
+}
+
+.lotto-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ========== Warning & Toast ========== */
+.lotto-warning {
+  text-align: center;
+  color: #d44;
+  font-size: 12px;
+  margin: 0;
+}
+
+.lotto-done-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 14px 14px;
+  align-items: center;
+}
+
+.lotto-toast {
+  font-size: 13px;
+  color: #333;
+  font-weight: 600;
+  text-align: center;
+  margin: 4px 0;
+}
+
+.lotto-error-toast {
+  font-size: 13px;
+  color: #d44;
+  font-weight: 600;
+  text-align: center;
+  margin: 4px 0;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 479px) {
+  .lotto-widget {
+    width: 95%;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .lotto-cell__number {
+    font-size: 13px;
+  }
+}

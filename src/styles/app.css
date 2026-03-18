@@ -1,0 +1,596 @@
+/* ========== App Container ========== */
+.app-container {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #f0ebe5;
+  font-family: 'Gothic A1', 'Noto Sans KR', -apple-system, sans-serif;
+  touch-action: manipulation;
+  padding-bottom: 80px; /* space for floating CTA */
+  padding-top: 64px; /* space for countdown timer */
+}
+
+/* ========== Countdown Timer ========== */
+.countdown-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.countdown-bar__label {
+  color: #aaa;
+  font-size: 12px;
+}
+
+.countdown-bar__time {
+  font-family: 'Courier New', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #ff6b6b;
+}
+
+.countdown-bar__confirmed {
+  color: #51cf66;
+  font-size: 13px;
+}
+
+.countdown-bar__numbers {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.countdown-bar__ball {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ff6b6b;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.countdown-bar__ball--bonus {
+  background: #ffd43b;
+  color: #333;
+}
+
+/* ========== Ticket View ========== */
+.app-ticket-view {
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* ========== Wall View ========== */
+.wall-container {
+  position: relative;
+  min-height: 60vh;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.wall-grid {
+  position: relative;
+  width: 100%;
+  min-height: 500px;
+}
+
+.wall-empty {
+  text-align: center;
+  color: #999;
+  padding: 60px 20px;
+  font-size: 16px;
+}
+
+.wall-error {
+  text-align: center;
+  color: #d44;
+  padding: 40px 20px;
+}
+
+.wall-error button {
+  margin-top: 12px;
+  padding: 8px 20px;
+  border: 1px solid #d44;
+  background: white;
+  color: #d44;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.wall-loading {
+  text-align: center;
+  padding: 20px;
+  color: #999;
+}
+
+.wall-load-more {
+  text-align: center;
+  padding: 16px;
+}
+
+.wall-load-more button {
+  padding: 10px 24px;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #555;
+}
+
+/* ========== Ticket Card (mini on wall) ========== */
+.ticket-card {
+  position: absolute;
+  width: 110px;
+  padding: 10px 8px 8px;
+  background: #faf8f5;
+  border: 1px solid #e0d0c8;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 1px 2px 4px rgba(0,0,0,0.08);
+}
+
+.ticket-card:hover {
+  transform: scale(1.05);
+  box-shadow: 2px 4px 12px rgba(0,0,0,0.15);
+  z-index: 10;
+}
+
+.ticket-card--mine {
+  border-color: #d44;
+  box-shadow: 0 0 0 2px rgba(212,68,68,0.3), 1px 2px 4px rgba(0,0,0,0.08);
+}
+
+.ticket-card__tape {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 12px;
+  background: rgba(255, 230, 150, 0.8);
+  border-radius: 1px;
+}
+
+.ticket-card__numbers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.ticket-card__num {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #d44;
+  background: rgba(212,68,68,0.08);
+  border-radius: 2px;
+  padding: 2px 0;
+}
+
+.ticket-card__tag {
+  font-size: 9px;
+  color: #999;
+  text-align: center;
+  margin-top: 4px;
+}
+
+/* ========== Ticket Detail (modal) ========== */
+.ticket-detail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.ticket-detail {
+  background: white;
+  border-radius: 12px;
+  max-width: 380px;
+  width: 100%;
+  padding: 24px;
+  position: relative;
+  animation: slideUp 0.25s ease;
+}
+
+.ticket-detail__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #f0f0f0;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ticket-detail__title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.ticket-detail__numbers {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.ticket-detail__ball {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e8696b, #dc5557);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.ticket-detail__meta {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+}
+
+.ticket-detail__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* ========== Wall Counter ========== */
+.wall-counter {
+  text-align: center;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #666;
+  background: rgba(255,255,255,0.6);
+  border-bottom: 1px solid #e0d8d0;
+}
+
+.wall-counter__number {
+  font-weight: 800;
+  color: #d44;
+  font-size: 18px;
+  display: inline-block;
+  min-width: 30px;
+  transition: transform 0.3s ease;
+}
+
+/* ========== Floating CTA ========== */
+.floating-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  padding: 12px 16px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  background: white;
+  border-top: 1px solid #e0d8d0;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+}
+
+.floating-cta__button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #e8696b 0%, #dc5557 100%);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.1s ease;
+}
+
+.floating-cta__button:active {
+  transform: scale(0.98);
+}
+
+/* ========== Winning Number Input ========== */
+.winning-input {
+  margin: 16px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.winning-input__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.winning-input__status {
+  font-size: 13px;
+  color: #999;
+  margin-bottom: 16px;
+}
+
+.winning-input__grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.winning-input__cell {
+  aspect-ratio: 1;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  background: white;
+  color: #333;
+}
+
+.winning-input__cell:hover {
+  background: #fff5f5;
+}
+
+.winning-input__cell--selected {
+  background: #d44;
+  color: white;
+  border-color: #d44;
+}
+
+.winning-input__cell--bonus {
+  background: #ffd43b;
+  color: #333;
+  border-color: #ffd43b;
+}
+
+.winning-input__step {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.winning-input__submit {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #e8696b, #dc5557);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.winning-input__submit:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.winning-input__error {
+  color: #d44;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.winning-input__voted {
+  text-align: center;
+  color: #51cf66;
+  font-weight: 600;
+}
+
+/* ========== Win Check Result ========== */
+.win-check {
+  margin: 16px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.win-check__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.win-check__winning-numbers {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.win-check__ticket {
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.win-check__ticket--win {
+  border-color: #51cf66;
+  background: #f0fff4;
+}
+
+.win-check__rank {
+  font-size: 20px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.win-check__rank--win {
+  color: #d44;
+}
+
+.win-check__numbers {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.win-check__num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  background: #f0f0f0;
+  color: #333;
+}
+
+.win-check__num--match {
+  background: #d44;
+  color: white;
+}
+
+.win-check__message {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+}
+
+/* ========== Share Button ========== */
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid #d44;
+  background: white;
+  color: #d44;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.share-btn:hover {
+  background: #fff5f5;
+}
+
+.share-btn--copied {
+  background: #d44;
+  color: white;
+}
+
+/* ========== Sticking Animation ========== */
+.app-sticking-animation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.sticking-ticket {
+  animation: stickToWall 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.sticking-ticket__inner {
+  padding: 20px 40px;
+  background: #faf8f5;
+  border: 1px solid #d4a0a0;
+  border-radius: 4px;
+  font-weight: 700;
+  color: #d44;
+  font-size: 16px;
+}
+
+@keyframes stickToWall {
+  0% {
+    transform: scale(1) rotate(0deg) translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.6) rotate(-3deg) translateY(-40px);
+    opacity: 0.8;
+  }
+  80% {
+    transform: scale(0.5) rotate(2deg) translateY(-20px);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(0.5) rotate(1deg) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ========== Animations ========== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ========== Reduced Motion ========== */
+@media (prefers-reduced-motion: reduce) {
+  .sticking-ticket,
+  .ticket-detail-overlay,
+  .ticket-detail,
+  .ticket-card,
+  .wall-counter__number {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ========== Safe Area ========== */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .app-container {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+}

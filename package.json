@@ -1,0 +1,28 @@
+{
+  "name": "online-lotto-room",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:worker": "wrangler dev",
+    "build": "tsc && vite build",
+    "deploy": "npm run build && wrangler deploy",
+    "preview": "vite preview",
+    "db:init": "wrangler d1 execute lotto-room-db --local --file=schema.sql"
+  },
+  "dependencies": {
+    "hono": "^4.6.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241205.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "~5.6.2",
+    "vite": "^6.0.0",
+    "wrangler": "^3.99.0"
+  }
+}

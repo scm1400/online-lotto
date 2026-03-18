@@ -1,0 +1,28 @@
+name = "online-lotto-room"
+main = "worker/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "lotto-room-db"
+database_id = "9f3d86ba-8a4e-4f6d-ae06-32781e30d089"
+
+[[r2_buckets]]
+binding = "OG_IMAGES"
+bucket_name = "lotto-og-images"
+
+[vars]
+VOTE_THRESHOLD = "10"
+VOTE_WINDOW_START_HOUR = "20"
+VOTE_WINDOW_START_MINUTE = "45"
+VOTE_WINDOW_END_HOUR = "23"
+VOTE_WINDOW_END_MINUTE = "59"
+MAX_TICKETS_PER_USER = "5"
+CORS_ORIGIN = "*"
+
+[triggers]
+crons = ["0 3 * * sun"]
