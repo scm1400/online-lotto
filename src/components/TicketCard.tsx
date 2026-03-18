@@ -17,7 +17,7 @@ export const TicketCard = memo(function TicketCard({ ticket, isMine, onClick }: 
 
   return (
     <div
-      className={`ticket-card ${isMine ? 'ticket-card--mine' : ''}`}
+      className={`ticket-card ${isMine ? 'ticket-card--mine' : ''} ${ticket.mode === 'ai' ? 'ticket-card--ai' : ''}`}
       onClick={onClick}
       role="button"
       tabIndex={0}
@@ -25,6 +25,7 @@ export const TicketCard = memo(function TicketCard({ ticket, isMine, onClick }: 
       onKeyDown={(e) => { if (e.key === 'Enter') onClick(); }}
     >
       <div className="ticket-card__tape" />
+      {ticket.mode === 'ai' && <div className="ticket-card__ai-badge">AI</div>}
       <div className="ticket-card__numbers">
         {ticket.numbers.map((n, i) => (
           <span key={i} className="ticket-card__num">{n}</span>

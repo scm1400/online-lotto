@@ -36,6 +36,7 @@ export function MyTicketsPanel({ roundId, onClose }: MyTicketsPanelProps) {
           {tickets.map((ticket, idx) => (
             <div key={ticket.ticketId} className="my-tickets-panel__item">
               <div className="my-tickets-panel__idx">{idx + 1}</div>
+              {ticket.mode === 'ai' && <span className="my-tickets-panel__ai-tag">AI</span>}
               <div className="my-tickets-panel__numbers">
                 {ticket.numbers.map((n, i) => (
                   <span key={i} className="my-tickets-panel__ball">{n}</span>
@@ -44,7 +45,7 @@ export function MyTicketsPanel({ roundId, onClose }: MyTicketsPanelProps) {
               <div className="my-tickets-panel__meta">
                 {ticket.pickTag && <span className="my-tickets-panel__tag">"{ticket.pickTag}"</span>}
                 <span className="my-tickets-panel__mode">
-                  {ticket.mode === 'auto' ? '자동' : ticket.mode === 'semi_auto' ? '반자동' : '수동'}
+                  {ticket.mode === 'ai' ? 'AI 선택' : ticket.mode === 'auto' ? '자동' : ticket.mode === 'semi_auto' ? '반자동' : '수동'}
                 </span>
               </div>
               <ShareButton ticketId={ticket.ticketId} />

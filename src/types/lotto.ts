@@ -18,10 +18,10 @@ export const DEFAULT_PEN: PenSkin = {
 
 // --- Lotto Draft ---
 
-export type SelectionMode = 'manual' | 'semi_auto' | 'auto';
+export type SelectionMode = 'manual' | 'semi_auto' | 'auto' | 'ai';
 
 export const PICK_TAGS = ['감', '생일', '꿈', '역배', '자동', '매번 고정'] as const;
-export type PickTag = (typeof PICK_TAGS)[number];
+export type PickTag = (typeof PICK_TAGS)[number] | string;
 
 export interface LottoDraft {
   draftId: string;
@@ -48,6 +48,7 @@ export interface LottoWidgetProps {
   onDraftUpdate?: (draft: LottoDraft) => Promise<void> | void;
   onRequestInventoryStatus?: () => Promise<InventoryStatus>;
   onSubmitSuccess?: (draft: LottoDraft) => void;
+  onAiSubmit?: () => void;
   onWidgetClose?: () => void;
 }
 

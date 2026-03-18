@@ -8,6 +8,7 @@ interface ActionBarProps {
   onAutoFill: () => void;
   onReset: () => void;
   onComplete: () => void;
+  onAiSubmit?: () => void;
 }
 
 export function ActionBar({
@@ -20,6 +21,7 @@ export function ActionBar({
   onAutoFill,
   onReset,
   onComplete,
+  onAiSubmit,
 }: ActionBarProps) {
   return (
     <div className="lotto-action-bar">
@@ -41,6 +43,16 @@ export function ActionBar({
           초기화
         </button>
       </div>
+      {onAiSubmit && (
+        <button
+          className="lotto-btn lotto-btn--ai"
+          onClick={onAiSubmit}
+          disabled={isAnimating}
+          type="button"
+        >
+          AI에게 시키기
+        </button>
+      )}
       <button
         className="lotto-btn lotto-btn--primary"
         onClick={onComplete}

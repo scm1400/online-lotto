@@ -922,3 +922,130 @@
 .my-tickets-panel__mode {
   color: #aaa;
 }
+
+/* AI Ticket Styles */
+.ticket-card--ai {
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.4), 0 0 4px rgba(139, 92, 246, 0.2);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(168, 85, 247, 0.1));
+}
+
+.ticket-card__ai-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: linear-gradient(135deg, #8b5cf6, #a855f7);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  line-height: 1.4;
+}
+
+/* AI Button */
+.lotto-btn--ai {
+  background: linear-gradient(135deg, #8b5cf6, #a855f7);
+  color: white;
+  border: none;
+  font-weight: 600;
+  width: 100%;
+  height: 42px;
+}
+
+.lotto-btn--ai:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* AI Prompt Modal */
+.ai-prompt-modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 440px;
+  width: calc(100% - 32px);
+  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.ai-prompt-modal__title {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.ai-prompt-modal__code {
+  background: #1a1a2e;
+  color: #e0e0e0;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.ai-prompt-modal__hint {
+  text-align: center;
+  color: #666;
+  font-size: 13px;
+  margin: 12px 0 4px;
+}
+
+.ai-prompt-modal__warning {
+  text-align: center;
+  color: #b45309;
+  font-size: 12px;
+  margin: 4px 0 16px;
+}
+
+.ai-prompt-modal__copy-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #8b5cf6, #a855f7);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ai-prompt-modal__copy-btn:active {
+  transform: scale(0.98);
+}
+
+.ai-prompt-modal__refresh-hint {
+  text-align: center;
+  color: #999;
+  font-size: 11px;
+  margin-top: 12px;
+}
+
+.my-tickets-panel__ai-tag {
+  background: linear-gradient(135deg, #8b5cf6, #a855f7);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+/* Heatmap AI variant */
+.heatmap-overlay {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.heatmap-bar--ai .heatmap-bar__fill {
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.3), rgba(168, 85, 247, 0.6));
+}
+
+.heatmap-bar--ai .heatmap-bar__label {
+  color: #8b5cf6;
+}

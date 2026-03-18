@@ -9,6 +9,7 @@ import { WinningNumberInput } from './components/WinningNumberInput';
 import { HeatmapOverlay } from './components/HeatmapOverlay';
 import { WinCheckResult } from './components/WinCheckResult';
 import { MyTicketsPanel } from './components/MyTicketsPanel';
+import { AiPromptModal } from './components/AiPromptModal';
 import { DEFAULT_PEN } from './types/lotto';
 import type { LottoDraft } from './types/lotto';
 import type { Ticket } from './types/api';
@@ -66,6 +67,7 @@ export function App() {
   });
   const [hourlyRemaining, setHourlyRemaining] = useState<number | null>(null);
   const [showMyTickets, setShowMyTickets] = useState(false);
+  const [showAiPrompt, setShowAiPrompt] = useState(false);
   const [rateLimitModal, setRateLimitModal] = useState<{ retryAfter: number } | null>(null);
 
   const { round, roundId, phase, isConfirmed } = useRoundState();
@@ -175,6 +177,7 @@ export function App() {
             onDraftComplete={async () => {}}
             onSubmitSuccess={handleSubmitSuccess}
             onWidgetClose={() => setView('wall')}
+            onAiSubmit={() => setShowAiPrompt(true)}
           />
         </div>
       )}
@@ -258,6 +261,14 @@ export function App() {
         <MyTicketsPanel
           roundId={roundId}
           onClose={() => setShowMyTickets(false)}
+        />
+      )}
+
+      {showAiPrompt && roundId && (
+        <AiPromptModal
+          userId={getUserId()}
+          roundId={roundId}
+          onClose={() => setShowAiPrompt(false)}
         />
       )}
     </div>

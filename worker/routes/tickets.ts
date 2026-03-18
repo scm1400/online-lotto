@@ -29,6 +29,12 @@ ticketsRouter.post('/', async (c) => {
     return c.json({ ok: false, error: '번호는 1~45 사이여야 합니다' }, 400);
   }
 
+  // Validate mode
+  const VALID_MODES = ['manual', 'semi_auto', 'auto', 'ai'];
+  if (!body.mode || !VALID_MODES.includes(body.mode)) {
+    return c.json({ ok: false, error: '유효하지 않은 모드입니다' }, 400);
+  }
+
   // Ensure round exists
   const roundId = body.roundId || getCurrentRoundId();
   const drawTime = getDrawTimeForRound(roundId);
@@ -66,8 +72,18 @@ ticketsRouter.post('/', async (c) => {
   };
 
   await insertTicket(c.env.DB, ticket);
-  await incrementTicketCount(c.env.DB, roundId);
-  await invalidateCache('/api/tickets');
+
+  try {
+    await incrementTicketCount(c.env.DB, roundId);
+  } catch {
+    // Non-critical: count may be slightly off
+  }
+
+  try {
+    await invalidateCache('/api/tickets');
+  } catch {
+    // Non-critical: cache will expire naturally via TTL
+  }
 
   return c.json({
     ok: true,

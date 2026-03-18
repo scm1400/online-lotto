@@ -38,7 +38,7 @@ export function TicketDetail({ ticket, onClose }: TicketDetailProps) {
           ✕
         </button>
 
-        <div className="ticket-detail__title">나의 로또 번호</div>
+        <div className="ticket-detail__title">{ticket.mode === 'ai' ? 'AI가 선택한 번호' : '나의 로또 번호'}</div>
 
         <div className="ticket-detail__numbers">
           {ticket.numbers.map((n, i) => (
@@ -48,7 +48,7 @@ export function TicketDetail({ ticket, onClose }: TicketDetailProps) {
 
         <div className="ticket-detail__meta">
           {ticket.pickTag && <span>#{ticket.pickTag} · </span>}
-          <span>{ticket.mode === 'auto' ? '자동' : ticket.mode === 'semi_auto' ? '반자동' : '수동'}</span>
+          <span>{ticket.mode === 'ai' ? 'AI 선택' : ticket.mode === 'auto' ? '자동' : ticket.mode === 'semi_auto' ? '반자동' : '수동'}</span>
           <span> · {dateStr}</span>
         </div>
 

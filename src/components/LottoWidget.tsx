@@ -26,6 +26,7 @@ export function LottoWidget(props: LottoWidgetProps) {
     widgetMode = 'standalone',
     onSubmitSuccess,
     onWidgetClose,
+    onAiSubmit,
   } = props;
 
   const isEditMode = !!initialDraft;
@@ -211,6 +212,7 @@ export function LottoWidget(props: LottoWidgetProps) {
             onAutoFill={runAutoFill}
             onReset={handleReset}
             onComplete={handleComplete}
+            onAiSubmit={onAiSubmit}
           />
         </>
       )}
