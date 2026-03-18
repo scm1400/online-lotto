@@ -24,7 +24,7 @@ async function apiFetch<T>(
     });
     const data = await res.json();
     if (!res.ok) {
-      return { ok: false, error: data.error || res.statusText, code: data.code };
+      return { ok: false, error: data.error || res.statusText, code: data.code, retryAfter: data.retryAfter, hourlyUsed: data.hourlyUsed, hourlyMax: data.hourlyMax };
     }
     // Server returns { ok: true, data: T } — unwrap the nested data
     const body = data as { ok: boolean; data: T };
@@ -73,6 +73,14 @@ export async function getTicketById(
   return apiFetch<Ticket>(`/tickets/${ticketId}`);
 }
 
+// My tickets (server-side by userId)
+export async function getMyTickets(
+  roundId: string,
+  userId: string
+): Promise<ApiResult<{ tickets: Ticket[] }>> {
+  return apiFetch<{ tickets: Ticket[] }>(`/tickets/mine?userId=${userId}&roundId=${roundId}`);
+}
+
 // Votes
 export async function submitVote(
   roundId: string,
@@ -94,6 +102,11 @@ export async function getVoteStatus(
   roundId: string
 ): Promise<ApiResult<VoteStatusResponse>> {
   return apiFetch<VoteStatusResponse>(`/votes?roundId=${roundId}`);
+}
+
+// Rate limit
+export async function getRateLimit(): Promise<ApiResult<{ hourlyUsed: number; hourlyMax: number; remaining: number; retryAfter: number }>> {
+  return apiFetch(`/tickets/rate-limit?userId=${getUserId()}`);
 }
 
 // Rounds

@@ -361,6 +361,39 @@
   margin: 4px 0;
 }
 
+/* ========== Tag Text Input ========== */
+.lotto-tag-input {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 14px;
+}
+
+.lotto-tag-input__label {
+  font-size: 11px;
+  color: #aaa;
+}
+
+.lotto-tag-input__field {
+  padding: 8px 12px;
+  border: 1px solid #d4a0a0;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #333;
+  background: white;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.lotto-tag-input__field:focus {
+  border-color: #d44;
+}
+
+.lotto-tag-input__field::placeholder {
+  color: #ccc;
+}
+
 /* ========== Responsive ========== */
 @media (max-width: 479px) {
   .lotto-widget {

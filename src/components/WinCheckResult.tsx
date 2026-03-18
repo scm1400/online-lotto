@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { Ticket } from '../types/api';
-import { getTicketById } from '../utils/api';
+import { getMyTickets } from '../utils/api';
+import { getUserId } from '../utils/userId';
 import { checkWin, getRankLabel, getRankEmoji } from '../utils/winCheck';
 import { Confetti } from './Confetti';
 import { ShareButton } from './ShareButton';
@@ -8,7 +9,6 @@ import { ShareButton } from './ShareButton';
 interface WinCheckResultProps {
   winningNumbers: number[];
   bonusNumber: number;
-  myTicketIds: string[];
   roundId: string;
 }
 
@@ -17,19 +17,18 @@ interface TicketResult {
   rank: ReturnType<typeof checkWin>;
 }
 
-export function WinCheckResult({ winningNumbers, bonusNumber, myTicketIds, roundId }: WinCheckResultProps) {
+export function WinCheckResult({ winningNumbers, bonusNumber, roundId }: WinCheckResultProps) {
   const [results, setResults] = useState<TicketResult[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
     async function loadResults() {
-      const fetched = await Promise.all(myTicketIds.map((id) => getTicketById(id)));
-      const loaded: TicketResult[] = fetched
-        .filter((r): r is { ok: true; data: Ticket } => r.ok && r.data.roundId === roundId)
-        .map((r) => ({
-          ticket: r.data,
-          rank: checkWin(r.data.numbers, winningNumbers, bonusNumber),
-        }));
+      const result = await getMyTickets(roundId, getUserId());
+      if (!result.ok) return;
+      const loaded: TicketResult[] = result.data.tickets.map((ticket) => ({
+        ticket,
+        rank: checkWin(ticket.numbers, winningNumbers, bonusNumber),
+      }));
       setResults(loaded);
       if (loaded.some((r) => r.rank !== null)) {
         setShowConfetti(true);
@@ -37,7 +36,7 @@ export function WinCheckResult({ winningNumbers, bonusNumber, myTicketIds, round
       }
     }
     loadResults();
-  }, [myTicketIds, winningNumbers, bonusNumber, roundId]);
+  }, [winningNumbers, bonusNumber, roundId]);
 
   if (results.length === 0) {
     return (

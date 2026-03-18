@@ -1,46 +1,37 @@
-const KST_OFFSET = 9 * 60; // UTC+9 in minutes
-const DRAW_HOUR = 20;
-const DRAW_MINUTE = 45;
+// Saturday 20:45 KST = Saturday 11:45 UTC
+const DRAW_UTC_HOUR = 11;
+const DRAW_UTC_MINUTE = 45;
 const SATURDAY = 6;
-
-function toKST(date: Date): Date {
-  const utc = date.getTime() + date.getTimezoneOffset() * 60000;
-  return new Date(utc + KST_OFFSET * 60000);
-}
 
 export function getNextDrawTime(): Date {
   const now = new Date();
-  const kstNow = toKST(now);
+  const target = new Date(now);
 
-  const dayOfWeek = kstNow.getDay();
-  let daysUntilSaturday = (SATURDAY - dayOfWeek + 7) % 7;
+  // Set to next Saturday 11:45 UTC
+  const currentDay = target.getUTCDay();
+  let daysUntil = (SATURDAY - currentDay + 7) % 7;
 
-  // If it's Saturday, check if draw time has passed
-  if (daysUntilSaturday === 0) {
-    const drawToday = new Date(kstNow);
-    drawToday.setHours(DRAW_HOUR, DRAW_MINUTE, 0, 0);
-    if (kstNow >= drawToday) {
-      daysUntilSaturday = 7; // Next Saturday
+  if (daysUntil === 0) {
+    // It's Saturday — check if draw time passed
+    const currentMinutes = target.getUTCHours() * 60 + target.getUTCMinutes();
+    const drawMinutes = DRAW_UTC_HOUR * 60 + DRAW_UTC_MINUTE;
+    if (currentMinutes >= drawMinutes) {
+      daysUntil = 7;
     }
   }
 
-  const drawKST = new Date(kstNow);
-  drawKST.setDate(drawKST.getDate() + daysUntilSaturday);
-  drawKST.setHours(DRAW_HOUR, DRAW_MINUTE, 0, 0);
+  target.setUTCDate(target.getUTCDate() + daysUntil);
+  target.setUTCHours(DRAW_UTC_HOUR, DRAW_UTC_MINUTE, 0, 0);
 
-  // Convert back from KST to local
-  const drawUTC = drawKST.getTime() - KST_OFFSET * 60000;
-  const drawLocal = new Date(drawUTC - now.getTimezoneOffset() * 60000);
-
-  return drawLocal;
+  return target;
 }
 
 export function isPastDraw(): boolean {
-  const kstNow = toKST(new Date());
-  if (kstNow.getDay() !== SATURDAY) return false;
-  const hours = kstNow.getHours();
-  const minutes = kstNow.getMinutes();
-  return hours > DRAW_HOUR || (hours === DRAW_HOUR && minutes >= DRAW_MINUTE);
+  const now = new Date();
+  if (now.getUTCDay() !== SATURDAY) return false;
+  const mins = now.getUTCHours() * 60 + now.getUTCMinutes();
+  const drawMins = DRAW_UTC_HOUR * 60 + DRAW_UTC_MINUTE;
+  return mins >= drawMins;
 }
 
 export interface TimeRemaining {
@@ -48,7 +39,7 @@ export interface TimeRemaining {
   hours: number;
   minutes: number;
   seconds: number;
-  total: number; // total milliseconds
+  total: number;
 }
 
 export function getTimeRemaining(target: Date): TimeRemaining {
@@ -60,12 +51,37 @@ export function getTimeRemaining(target: Date): TimeRemaining {
   return { days, hours, minutes, seconds, total };
 }
 
-export function getRoundId(date?: Date): string {
-  const d = date ? toKST(date) : toKST(new Date());
-  // If past Saturday draw time, use current week; otherwise use current week
-  // ISO week: Monday is first day of week
-  const jan4 = new Date(d.getFullYear(), 0, 4);
-  const dayOfYear = Math.floor((d.getTime() - jan4.getTime()) / 86400000) + 1;
-  const weekNum = Math.ceil((dayOfYear + jan4.getDay()) / 7);
-  return `${d.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
+export function getRoundId(): string {
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  // ISO week: use Thursday-based calculation
+  const jan1 = new Date(Date.UTC(year, 0, 1));
+  const jan1Day = jan1.getUTCDay() || 7; // Mon=1..Sun=7
+  const firstThursday = new Date(jan1);
+  firstThursday.setUTCDate(jan1.getUTCDate() + (4 - jan1Day));
+  const weekStart = new Date(firstThursday);
+  weekStart.setUTCDate(firstThursday.getUTCDate() - 3); // Monday of week 1
+
+  const diff = now.getTime() - weekStart.getTime();
+  const weekNum = Math.floor(diff / (7 * 24 * 60 * 60 * 1000)) + 1;
+
+  if (weekNum < 1) {
+    // Belongs to last year's last week
+    return getRoundIdForDate(new Date(Date.UTC(year - 1, 11, 28)));
+  }
+
+  return `${year}-W${String(weekNum).padStart(2, '0')}`;
+}
+
+function getRoundIdForDate(d: Date): string {
+  const year = d.getUTCFullYear();
+  const jan1 = new Date(Date.UTC(year, 0, 1));
+  const jan1Day = jan1.getUTCDay() || 7;
+  const firstThursday = new Date(jan1);
+  firstThursday.setUTCDate(jan1.getUTCDate() + (4 - jan1Day));
+  const weekStart = new Date(firstThursday);
+  weekStart.setUTCDate(firstThursday.getUTCDate() - 3);
+  const diff = d.getTime() - weekStart.getTime();
+  const weekNum = Math.floor(diff / (7 * 24 * 60 * 60 * 1000)) + 1;
+  return `${year}-W${String(weekNum).padStart(2, '0')}`;
 }

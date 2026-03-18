@@ -27,7 +27,7 @@ export interface LottoDraft {
   draftId: string;
   numbers: number[]; // 6 numbers, ascending order
   mode: SelectionMode;
-  pickTag?: PickTag;
+  pickTag?: string;
   createdAt: string; // ISO 8601
 }
 

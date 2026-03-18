@@ -45,6 +45,9 @@ export interface ApiError {
   ok: false;
   error: string;
   code?: string;
+  retryAfter?: number;
+  hourlyUsed?: number;
+  hourlyMax?: number;
 }
 
 export type ApiResult<T> = ApiResponse<T> | ApiError;

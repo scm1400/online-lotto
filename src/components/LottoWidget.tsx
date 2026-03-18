@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
-import type { LottoWidgetProps, LottoDraft, PickTag, InventoryStatus } from '../types/lotto';
+import type { LottoWidgetProps, LottoDraft, InventoryStatus } from '../types/lotto';
 import { DEFAULT_PEN, MAX_INVENTORY } from '../types/lotto';
 import { useLottoSelection } from '../hooks/useLottoSelection';
 import { useAutoFill } from '../hooks/useAutoFill';
@@ -56,8 +56,8 @@ export function LottoWidget(props: LottoWidgetProps) {
   const canvasRef = useRef<CanvasOverlayHandle>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [phase, setPhase] = useState<WidgetPhase>('selecting');
-  const [selectedTag, setSelectedTag] = useState<PickTag | undefined>(
-    initialDraft?.pickTag as PickTag | undefined,
+  const [selectedTag, setSelectedTag] = useState<string | undefined>(
+    initialDraft?.pickTag,
   );
   const [pendingDraft, setPendingDraft] = useState<LottoDraft | null>(null);
 

@@ -104,6 +104,33 @@ export async function getUserTicketCount(db: D1Database, userId: string, roundId
   return result?.count || 0;
 }
 
+export async function getUserHourlyTicketCount(db: D1Database, userId: string): Promise<{ count: number; oldestInWindow: string | null }> {
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const [countResult, oldestResult] = await Promise.all([
+    db.prepare(
+      'SELECT COUNT(*) as count FROM tickets WHERE user_id = ? AND created_at > ?'
+    ).bind(userId, oneHourAgo).first<{ count: number }>(),
+    db.prepare(
+      'SELECT created_at FROM tickets WHERE user_id = ? AND created_at > ? ORDER BY created_at ASC LIMIT 1'
+    ).bind(userId, oneHourAgo).first<{ created_at: string }>(),
+  ]);
+  return {
+    count: countResult?.count || 0,
+    oldestInWindow: oldestResult?.created_at || null,
+  };
+}
+
+export async function getTicketsByUserId(
+  db: D1Database,
+  userId: string,
+  roundId: string
+): Promise<Ticket[]> {
+  const rows = await db.prepare(
+    'SELECT * FROM tickets WHERE user_id = ? AND round_id = ? ORDER BY created_at DESC'
+  ).bind(userId, roundId).all();
+  return (rows.results || []).map(rowToTicket);
+}
+
 function rowToTicket(row: Record<string, unknown>): Ticket {
   return {
     ticketId: row.ticket_id as string,

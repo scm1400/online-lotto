@@ -1,6 +1,7 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import type { Ticket } from '../types/api';
 import { TicketCard } from './TicketCard';
+import { getUserId } from '../utils/userId';
 
 interface WallViewProps {
   tickets: Ticket[];
@@ -10,8 +11,9 @@ interface WallViewProps {
   onLoadMore: () => void;
   onRetry: () => void;
   onTicketClick: (ticket: Ticket) => void;
-  myTicketIds: string[];
 }
+
+const BATCH_SIZE = 40;
 
 export function WallView({
   tickets,
@@ -21,20 +23,40 @@ export function WallView({
   onLoadMore,
   onRetry,
   onTicketClick,
-  myTicketIds,
 }: WallViewProps) {
+  const myUserId = getUserId();
+  const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
+  const sentinelRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver>();
 
-  const lastTicketRef = useCallback((node: HTMLDivElement | null) => {
-    if (isLoading) return;
-    if (observerRef.current) observerRef.current.disconnect();
-    observerRef.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && hasMore) {
-        onLoadMore();
-      }
-    });
-    if (node) observerRef.current.observe(node);
-  }, [isLoading, hasMore, onLoadMore]);
+  // Show more tickets as user scrolls
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          if (visibleCount < tickets.length) {
+            // Show more from already-loaded tickets
+            setVisibleCount((prev) => Math.min(prev + BATCH_SIZE, tickets.length));
+          } else if (hasMore && !isLoading) {
+            // Fetch more from API
+            onLoadMore();
+          }
+        }
+      },
+      { rootMargin: '500px' }
+    );
+
+    observerRef.current.observe(sentinel);
+    return () => observerRef.current?.disconnect();
+  }, [visibleCount, tickets.length, hasMore, isLoading, onLoadMore]);
+
+  // Reset visible count when tickets array changes (new round, refresh)
+  useEffect(() => {
+    setVisibleCount(BATCH_SIZE);
+  }, [tickets.length === 0]);
 
   if (error) {
     return (
@@ -54,30 +76,34 @@ export function WallView({
     );
   }
 
+  const displayed = tickets.slice(0, visibleCount);
+
   return (
     <div className="wall-container">
       <div className="wall-grid">
-        {tickets.map((ticket, index) => (
+        {displayed.map((ticket) => (
           <div
             key={ticket.ticketId}
-            ref={index === tickets.length - 1 ? lastTicketRef : undefined}
-            style={{
-              position: 'absolute',
-              left: `${ticket.position.x * 85}%`,
-              top: `${Math.floor(index / 3) * 130 + ticket.position.y * 40}px`,
-              transform: `rotate(${ticket.rotation}deg)`,
-              zIndex: index,
-            }}
+            className="wall-grid__cell"
+            style={{ transform: `rotate(${ticket.rotation * 0.5}deg)` }}
           >
             <TicketCard
               ticket={ticket}
-              isMine={myTicketIds.includes(ticket.ticketId)}
+              isMine={ticket.userId === myUserId}
               onClick={() => onTicketClick(ticket)}
             />
           </div>
         ))}
       </div>
+
+      {/* Sentinel for infinite scroll */}
+      <div ref={sentinelRef} style={{ height: 1 }} />
+
       {isLoading && <div className="wall-loading">불러오는 중...</div>}
+
+      {!isLoading && visibleCount < tickets.length && (
+        <div className="wall-loading">스크롤하여 더 보기</div>
+      )}
     </div>
   );
 }

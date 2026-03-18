@@ -10,6 +10,7 @@ import {
   getOrCreateRound,
 } from '../utils/db';
 import { getCurrentRoundId, getDrawTimeForRound, isWithinVoteWindow } from '../utils/round';
+import { withCache } from '../utils/cache';
 
 const votesRouter = new Hono<{ Bindings: Env }>();
 
@@ -86,22 +87,26 @@ votesRouter.post('/', async (c) => {
 
 // GET /api/votes?roundId=X
 votesRouter.get('/', async (c) => {
-  const roundId = c.req.query('roundId') || getCurrentRoundId();
+  return withCache(c.req.raw, 10, async () => {
+    const roundId = c.req.query('roundId') || getCurrentRoundId();
 
-  // Check if round is confirmed
-  const drawTime = getDrawTimeForRound(roundId);
-  const round = await getOrCreateRound(c.env.DB, roundId, drawTime);
-  const voteStatus = await getVoteStatus(c.env.DB, roundId);
+    // Check if round is confirmed
+    const drawTime = getDrawTimeForRound(roundId);
+    const round = await getOrCreateRound(c.env.DB, roundId, drawTime);
+    const voteStatus = await getVoteStatus(c.env.DB, roundId);
 
-  return c.json({
-    ok: true,
-    data: {
-      confirmed: round.phase === 'confirmed',
-      winningNumbers: round.winningNumbers,
-      bonusNumber: round.bonusNumber,
-      voteCount: voteStatus.voteCount,
-      topVotes: voteStatus.topVotes,
-    },
+    return new Response(JSON.stringify({
+      ok: true,
+      data: {
+        confirmed: round.phase === 'confirmed',
+        winningNumbers: round.winningNumbers,
+        bonusNumber: round.bonusNumber,
+        voteCount: voteStatus.voteCount,
+        topVotes: voteStatus.topVotes,
+      },
+    }), {
+      headers: { 'Content-Type': 'application/json' },
+    });
   });
 });
 
